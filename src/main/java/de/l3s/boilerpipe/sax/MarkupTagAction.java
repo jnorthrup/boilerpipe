@@ -17,15 +17,15 @@ import de.l3s.boilerpipe.labels.LabelAction;
 /**
  * Assigns labels for element CSS classes and ids to the corresponding
  * {@link TextBlock}. CSS classes are prefixed by
- * <code>{@link DefaultLabels#MARKUP_PREFIX}.</code>, and IDs are prefixed by
- * <code>{@link DefaultLabels#MARKUP_PREFIX}#</code>
- * 
+ * {@code {@link DefaultLabels#MARKUP_PREFIX}.}, and IDs are prefixed by
+ * {@code {@link DefaultLabels#MARKUP_PREFIX}#}
+ *
  * @author Christian Kohlschütter
  */
-public final class MarkupTagAction implements TagAction {
+public class MarkupTagAction implements TagAction {
 
 	private final boolean isBlockLevel;
-	private LinkedList<List<String>> labelStack = new LinkedList<List<String>>();
+	private LinkedList<List<String>> labelStack = new LinkedList<>();
 
 	public MarkupTagAction(final boolean isBlockLevel) {
 		this.isBlockLevel = isBlockLevel;
@@ -37,7 +37,7 @@ public final class MarkupTagAction implements TagAction {
 	public boolean start(BoilerpipeHTMLContentHandler instance,
 			String localName, String qName, Attributes atts)
 			throws SAXException {
-		List<String> labels = new ArrayList<String>(5);
+		List<String> labels = new ArrayList<>(5);
 		labels.add(DefaultLabels.MARKUP_PREFIX  + localName);
 
 		String classVal = atts.getValue("class");
@@ -62,7 +62,7 @@ public final class MarkupTagAction implements TagAction {
 		}
 
 		Set<String> ancestors = getAncestorLabels();
-		List<String> labelsWithAncestors = new ArrayList<String>(
+		List<String> labelsWithAncestors = new ArrayList<>(
 				(ancestors.size() + 1) * labels.size());
 
 		for (String l : labels) {
@@ -94,7 +94,7 @@ public final class MarkupTagAction implements TagAction {
     }
     
 	private Set<String> getAncestorLabels() {
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<>();
 		for (List<String> labels : labelStack) {
 			if (labels == null) {
 				continue;

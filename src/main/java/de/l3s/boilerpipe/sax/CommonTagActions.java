@@ -36,7 +36,7 @@ public abstract class CommonTagActions {
 	private CommonTagActions() {
 	}
 
-    public static final class Chained implements TagAction {
+    public static class Chained implements TagAction {
 
         private final TagAction t1;
         private final TagAction t2;
@@ -88,9 +88,9 @@ public abstract class CommonTagActions {
     };
     
     /**
-     * Marks this tag as "anchor" (this should usually only be set for the <code>&lt;A&gt;</code> tag).
+     * Marks this tag as "anchor" (this should usually only be set for the {@code &lt;A&gt;} tag).
      * Anchor tags may not be nested.
-     * 
+     *
      * There is a bug in certain versions of NekoHTML which still allows nested tags.
      * If boilerpipe encounters such nestings, a SAXException is thrown.
      */
@@ -137,7 +137,7 @@ public abstract class CommonTagActions {
     };
     
     /**
-     * Marks this tag the body element (this should usually only be set for the <code>&lt;BODY&gt;</code> tag).
+     * Marks this tag the body element (this should usually only be set for the {@code &lt;BODY&gt;} tag).
      */
     public static final TagAction TA_BODY = new TagAction() {
         public boolean start(final BoilerpipeHTMLContentHandler instance,
@@ -234,7 +234,7 @@ public abstract class CommonTagActions {
     };    
     
     /**
-     * Special TagAction for the <code>&lt;FONT&gt;</code> tag, which keeps track of the
+     * Special TagAction for the {@code &lt;FONT&gt;} tag, which keeps track of the
      * absolute and relative font size.
      */
     public static final TagAction TA_FONT = new TagAction() {
@@ -299,7 +299,7 @@ public abstract class CommonTagActions {
      * {@link CommonTagActions} for inline elements, which triggers some {@link LabelAction} on the generated
      * {@link TextBlock}.
      */
-    public static final class InlineTagLabelAction implements TagAction {
+    public static class InlineTagLabelAction implements TagAction {
 
         private final LabelAction action;
 
@@ -330,7 +330,7 @@ public abstract class CommonTagActions {
      * {@link CommonTagActions} for block-level elements, which triggers some {@link LabelAction} on the generated
      * {@link TextBlock}.
      */
-    public static final class BlockTagLabelAction implements TagAction {
+    public static class BlockTagLabelAction implements TagAction {
 
         private final LabelAction action;
 

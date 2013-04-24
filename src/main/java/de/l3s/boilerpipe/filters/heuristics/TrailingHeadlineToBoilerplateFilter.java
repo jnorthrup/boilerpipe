@@ -32,18 +32,9 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class TrailingHeadlineToBoilerplateFilter implements BoilerpipeFilter {
-    public static final TrailingHeadlineToBoilerplateFilter INSTANCE = new TrailingHeadlineToBoilerplateFilter();
+public class TrailingHeadlineToBoilerplateFilter implements BoilerpipeFilter {
 
-    /**
-     * Returns the singleton instance for ExpandTitleToContentFilter.
-     */
-    public static TrailingHeadlineToBoilerplateFilter getInstance() {
-        return INSTANCE;
-    }
-
-    public boolean process(TextDocument doc)
-            throws BoilerpipeProcessingException {
+    public boolean process(TextDocument doc) {
     	boolean changes = false;
     	
     	List<TextBlock> list = doc.getTextBlocks();

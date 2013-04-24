@@ -33,7 +33,7 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class LabelFusion implements BoilerpipeFilter {
+public class LabelFusion implements BoilerpipeFilter {
 
     public static final LabelFusion INSTANCE = new LabelFusion();
 
@@ -78,7 +78,7 @@ public final class LabelFusion implements BoilerpipeFilter {
 	}
 	
 	private Set<String> markupLabelsOnly(final Set<String> set1) {
-		Set<String> set = new HashSet<String>(set1);
+		Set<String> set = new HashSet<>(set1);
 		for(Iterator<String> it = set.iterator(); it.hasNext(); ) {
 			final String label = it.next();
 			if(!label.startsWith(DefaultLabels.MARKUP_PREFIX)) {

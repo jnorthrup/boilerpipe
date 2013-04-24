@@ -71,8 +71,8 @@ public class TextBlock implements Cloneable {
         this.numWordsInAnchorText = numWordsInAnchorText;
         this.numWordsInWrappedLines = numWordsInWrappedLines;
         this.numWrappedLines = numWrappedLines;
-        this.offsetBlocksStart = offsetBlocks;
-        this.offsetBlocksEnd = offsetBlocks;
+        offsetBlocksStart = offsetBlocks;
+        offsetBlocksEnd = offsetBlocks;
         initDensities();
     }
 
@@ -129,7 +129,7 @@ public class TextBlock implements Cloneable {
 
         initDensities();
 
-        this.isContent |= other.isContent;
+        isContent |= other.isContent;
 
         if(containedTextElements == null) {
         	containedTextElements = (BitSet)other.containedTextElements.clone();
@@ -141,7 +141,7 @@ public class TextBlock implements Cloneable {
 
         if (other.labels != null) {
             if (labels == null) {
-                labels = new HashSet<String>(other.labels);
+                labels = new HashSet<>(other.labels);
             } else {
                 labels.addAll(other.labels);
             }
@@ -179,16 +179,16 @@ public class TextBlock implements Cloneable {
      */
     public void addLabel(final String label) {
         if (labels == null) {
-            labels = new HashSet<String>(2);
+            labels = new HashSet<>(2);
         }
         labels.add(label);
     }
 
     /**
      * Checks whether this TextBlock has the given label.
-     * 
+     *
      * @param label The label
-     * @return <code>true</code> if this block is marked by the given label.
+     * @return {@code true} if this block is marked by the given label.
      */
     public boolean hasLabel(final String label) {
         return labels != null && labels.contains(label);
@@ -199,14 +199,14 @@ public class TextBlock implements Cloneable {
     }
     
     /**
-     * Returns the labels associated to this TextBlock, or <code>null</code> if no such labels
+     * Returns the labels associated to this TextBlock, or {@code null} if no such labels
      * exist.
-     * 
+     *
      * NOTE: The returned instance is the one used directly in TextBlock. You have full access
      * to the data structure. However it is recommended to use the label-specific methods in {@link TextBlock}
      * whenever possible.
-     * 
-     * @return Returns the set of labels, or <code>null</code> if no labels was added yet.
+     *
+     * @return Returns the set of labels, or {@code null} if no labels was added yet.
      */
     public Set<String> getLabels() {
         return labels;
@@ -214,41 +214,41 @@ public class TextBlock implements Cloneable {
     
     /**
      * Adds a set of labels to this {@link TextBlock}.
-     * <code>null</code>-references are silently ignored.
-     * 
+     * {@code null}-references are silently ignored.
+     *
      * @param l The labels to be added. 
      */
     public void addLabels(final Set<String> l) {
         if(l == null) {
             return;
         }
-        if(this.labels == null) {
-            this.labels = new HashSet<String>(l);
+        if(labels == null) {
+            labels = new HashSet<>(l);
         } else {
-            this.labels.addAll(l);
+            labels.addAll(l);
         }
     }
     
     /**
      * Adds a set of labels to this {@link TextBlock}.
-     * <code>null</code>-references are silently ignored.
-     * 
+     * {@code null}-references are silently ignored.
+     *
      * @param l The labels to be added. 
      */
     public void addLabels(final String... l) {
         if(l == null) {
             return;
         }
-        if(this.labels == null) {
-            this.labels = new HashSet<String>();
+        if(labels == null) {
+            labels = new HashSet<>();
         }
         for(final String label : l) {
-            this.labels.add(label);
+            labels.add(label);
         }
     }
 
     /**
-     * Returns the containedTextElements BitSet, or <code>null</code>.
+     * Returns the containedTextElements BitSet, or {@code null}.
      * @return
      */
     public BitSet getContainedTextElements() {
@@ -267,7 +267,7 @@ public class TextBlock implements Cloneable {
 			clone.text = new StringBuilder(text);
 		}
 		if(labels != null && !labels.isEmpty()) {
-			clone.labels = new HashSet<String>(labels);
+			clone.labels = new HashSet<>(labels);
 		}
 		if(containedTextElements != null) {
 			clone.containedTextElements = (BitSet)containedTextElements.clone();

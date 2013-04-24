@@ -29,12 +29,12 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
 
 /**
  * Marks {@link TextBlock}s which contain parts of the HTML
- * <code>&lt;TITLE&gt;</code> tag, using some heuristics which are quite
+ * {@code &lt;TITLE&gt;} tag, using some heuristics which are quite
  * specific to the news domain.
- * 
+ *
  * @author Christian Kohlschütter
  */
-public final class DocumentTitleMatchClassifier implements BoilerpipeFilter {
+public class DocumentTitleMatchClassifier implements BoilerpipeFilter {
 
 	private final Set<String> potentialTitles;
 
@@ -51,7 +51,7 @@ public final class DocumentTitleMatchClassifier implements BoilerpipeFilter {
 			if (title.length() == 0) {
 				this.potentialTitles = null;
 			} else {
-				this.potentialTitles = new HashSet<String>();
+				this.potentialTitles = new HashSet<>();
 
 				potentialTitles.add(title);
 

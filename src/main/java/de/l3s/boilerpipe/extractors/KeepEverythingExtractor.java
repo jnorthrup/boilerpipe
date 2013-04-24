@@ -26,7 +26,7 @@ import de.l3s.boilerpipe.filters.simple.MarkEverythingContentFilter;
  * 
  * @author Christian Kohlschütter
  */
-public final class KeepEverythingExtractor extends ExtractorBase {
+public class KeepEverythingExtractor extends ExtractorBase {
 
     public static final KeepEverythingExtractor INSTANCE = new KeepEverythingExtractor();
 

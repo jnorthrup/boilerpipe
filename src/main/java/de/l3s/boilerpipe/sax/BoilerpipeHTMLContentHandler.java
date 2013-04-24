@@ -17,11 +17,7 @@
  */
 package de.l3s.boilerpipe.sax;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.xml.sax.Attributes;
@@ -61,7 +57,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	boolean sbLastWasWhitespace = false;
 	private int textElementIdx = 0;
 
-	private final List<TextBlock> textBlocks = new ArrayList<TextBlock>();
+	private final List<TextBlock> textBlocks = new ArrayList<>();
 
 	private String lastStartTag = null;
 	@SuppressWarnings("unused")
@@ -75,8 +71,8 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	private boolean flush = false;
 	boolean inAnchorText = false;
 
-	LinkedList<LinkedList<LabelAction>> labelStacks = new LinkedList<LinkedList<LabelAction>>();
-	LinkedList<Integer> fontSizeStack = new LinkedList<Integer>();
+	LinkedList<LinkedList<LabelAction>> labelStacks = new LinkedList<>();
+	LinkedList<Integer> fontSizeStack = new LinkedList<>();
 
 	/**
 	 * Recycles this instance.
@@ -120,7 +116,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	 *            The {@link TagActionMap} to use, e.g.
 	 *            {@link DefaultTagActionMap}.
 	 */
-	public BoilerpipeHTMLContentHandler(final TagActionMap tagActions) {
+	public BoilerpipeHTMLContentHandler(TagActionMap tagActions) {
 		this.tagActions = tagActions;
 	}
 
@@ -231,7 +227,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 			return;
 		}
 
-		final int end = start + length;
+		int end = start + length;
 		for (int i = start; i < end; i++) {
 			if (Character.isWhitespace(ch[i])) {
 				ch[i] = ' ';
@@ -307,7 +303,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 			return;
 		}
 
-		final int length = tokenBuffer.length();
+		int length = tokenBuffer.length();
 		switch (length) {
 		case 0:
 			return;
@@ -318,17 +314,18 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				return;
 			}
 		}
-		final String[] tokens = UnicodeTokenizer.tokenize(tokenBuffer);
+        Iterator<CharSequence> tokens = UnicodeTokenizer.tokenize(tokenBuffer);
 
 		int numWords = 0;
 		int numLinkedWords = 0;
 		int numWrappedLines = 0;
 		int currentLineLength = -1; // don't count the first space
-		final int maxLineLength = 80;
+		int maxLineLength = 80;
 		int numTokens = 0;
 		int numWordsCurrentLine = 0;
+        while (tokens.hasNext()) {
+            CharSequence token = tokens.next();
 
-		for (String token : tokens) {
 			if (ANCHOR_TEXT_START.equals(token)) {
 				inAnchorText = true;
 			} else if (ANCHOR_TEXT_END.equals(token)) {
@@ -340,7 +337,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				if (inAnchorText) {
 					numLinkedWords++;
 				}
-				final int tokenLength = token.length();
+				int tokenLength = token.length();
 				currentLineLength += tokenLength + 1;
 				if (currentLineLength > maxLineLength) {
 					numWrappedLines++;
@@ -351,33 +348,35 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				numTokens++;
 			}
 		}
-		if (numTokens == 0) {
-			return;
-		}
-		int numWordsInWrappedLines;
-		if (numWrappedLines == 0) {
-			numWordsInWrappedLines = numWords;
-			numWrappedLines = 1;
-		} else {
-			numWordsInWrappedLines = numWords - numWordsCurrentLine;
-		}
+        if (numTokens != 0) {
+            int numWordsInWrappedLines;
+            switch (numWrappedLines) {
+                case 0:
+                    numWordsInWrappedLines = numWords;
+                    numWrappedLines = 1;
+                    break;
+                default:
+                    numWordsInWrappedLines = numWords - numWordsCurrentLine;
+                    break;
+            }
 
-		TextBlock tb = new TextBlock(textBuffer.toString().trim(),
-				currentContainedTextElements, numWords, numLinkedWords,
-				numWordsInWrappedLines, numWrappedLines, offsetBlocks);
-		currentContainedTextElements = new BitSet();
+            TextBlock tb = new TextBlock(textBuffer.toString().trim(),
+                    currentContainedTextElements, numWords, numLinkedWords,
+                    numWordsInWrappedLines, numWrappedLines, offsetBlocks);
+            currentContainedTextElements = new BitSet();
 
-		offsetBlocks++;
+            offsetBlocks++;
 
-		textBuffer.setLength(0);
-		tokenBuffer.setLength(0);
+            textBuffer.setLength(0);
+            tokenBuffer.setLength(0);
 
-		tb.setTagLevel(blockTagLevel);
-		addTextBlock(tb);
-		blockTagLevel = -1;
+            tb.setTagLevel(blockTagLevel);
+            addTextBlock(tb);
+            blockTagLevel = -1;
+        }
 	}
 
-	protected void addTextBlock(final TextBlock tb) {
+	protected void addTextBlock(TextBlock tb) {
 
 		for (Integer l : fontSizeStack) {
 			if (l != null) {
@@ -401,7 +400,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	private static final Pattern PAT_VALID_WORD_CHARACTER = Pattern
 			.compile("[\\p{L}\\p{Nd}\\p{Nl}\\p{No}]");
 
-	private static boolean isWord(final String token) {
+	private static boolean isWord(CharSequence token) {
 		return PAT_VALID_WORD_CHARACTER.matcher(token).find();
 	}
 
@@ -441,11 +440,11 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 		}
 	}
 
-	public void addLabelAction(final LabelAction la)
+	public void addLabelAction(LabelAction la)
 			throws IllegalStateException {
 		LinkedList<LabelAction> labelStack = labelStacks.getLast();
 		if (labelStack == null) {
-			labelStack = new LinkedList<LabelAction>();
+			labelStack = new LinkedList<>();
 			labelStacks.removeLast();
 			labelStacks.add(labelStack);
 		}

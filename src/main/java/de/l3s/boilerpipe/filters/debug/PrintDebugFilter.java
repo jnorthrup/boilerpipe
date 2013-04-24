@@ -29,32 +29,32 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class PrintDebugFilter implements BoilerpipeFilter {
+public class PrintDebugFilter implements BoilerpipeFilter {
 	/**
-	 * Returns the default instance for {@link PrintDebugFilter},
-	 * which dumps debug information to <code>System.out</code>
-	 */
+     * Returns the default instance for {@link PrintDebugFilter},
+     * which dumps debug information to {@code System.out}
+     */
 	public static final PrintDebugFilter INSTANCE = new PrintDebugFilter(
 			new PrintWriter(System.out, true));
 	private final PrintWriter out;
 
 	/**
-	 * Returns the default instance for {@link PrintDebugFilter},
-	 * which dumps debug information to <code>System.out</code>
-	 */
+     * Returns the default instance for {@link PrintDebugFilter},
+     * which dumps debug information to {@code System.out}
+     */
 	public static PrintDebugFilter getInstance() {
 		return INSTANCE;
 	}
 
 	/**
-	 * Creates a new instance of {@link PrintDebugFilter}.
-	 * 
-	 * Only use this method if you are not going to dump 
-	 * the debug information to <code>System.out</code> --
-	 * for this case, use {@link #getInstance()} instead. 
-	 * 
-	 * @param out The target {@link PrintWriter}. Will not be closed
-	 */
+     * Creates a new instance of {@link PrintDebugFilter}.
+     *
+     * Only use this method if you are not going to dump
+     * the debug information to {@code System.out} --
+     * for this case, use {@link #getInstance()} instead.
+     *
+     * @param out The target {@link PrintWriter}. Will not be closed
+     */
 	public PrintDebugFilter(final PrintWriter out) {
 		this.out = out;
 

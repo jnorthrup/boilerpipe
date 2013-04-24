@@ -26,7 +26,7 @@ import de.l3s.boilerpipe.document.TextBlock;
 import de.l3s.boilerpipe.document.TextDocument;
 import de.l3s.boilerpipe.labels.DefaultLabels;
 
-public final class ContentFusion implements BoilerpipeFilter {
+public class ContentFusion implements BoilerpipeFilter {
 
 	public static final ContentFusion INSTANCE = new ContentFusion();
 

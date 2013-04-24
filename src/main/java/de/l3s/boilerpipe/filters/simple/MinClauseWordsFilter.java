@@ -35,7 +35,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * @author Christian Kohlschütter
  * @see SplitParagraphBlocksFilter
  */
-public final class MinClauseWordsFilter implements BoilerpipeFilter {
+public class MinClauseWordsFilter implements BoilerpipeFilter {
     public static final MinClauseWordsFilter INSTANCE = new MinClauseWordsFilter(
             5, false);
     private int minWords;

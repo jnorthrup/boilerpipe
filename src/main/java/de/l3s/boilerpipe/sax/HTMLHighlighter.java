@@ -46,7 +46,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class HTMLHighlighter {
+public class HTMLHighlighter {
 
 	private Map<String, Set<String>> tagWhitelist = null;
 
@@ -215,12 +215,12 @@ public final class HTMLHighlighter {
 	}
 
 	/**
-	 * Returns the string that will be inserted before any highlighted HTML
-	 * block.
-	 * 
-	 * By default, this corresponds to
-	 * <code>&lt;span class=&qupt;x-boilerpipe-mark1&quot;&gt;</code>
-	 */
+     * Returns the string that will be inserted before any highlighted HTML
+     * block.
+     *
+     * By default, this corresponds to
+     * {@code &lt;span class=&qupt;x-boilerpipe-mark1&quot;&gt;}
+     */
 	public String getPreHighlight() {
 		return preHighlight;
 	}
@@ -236,11 +236,11 @@ public final class HTMLHighlighter {
 	}
 
 	/**
-	 * Returns the string that will be inserted after any highlighted HTML
-	 * block.
-	 * 
-	 * By default, this corresponds to <code>&lt;/span&gt;</code>
-	 */
+     * Returns the string that will be inserted after any highlighted HTML
+     * block.
+     *
+     * By default, this corresponds to {@code &lt;/span&gt;}
+     */
 	public String getPostHighlight() {
 		return postHighlight;
 	}
@@ -291,7 +291,7 @@ public final class HTMLHighlighter {
 			instance.inIgnorableElement--;
 		}
 	};
-	private static Map<String, TagAction> TAG_ACTIONS = new HashMap<String, TagAction>();
+	private static Map<String, TagAction> TAG_ACTIONS = new HashMap<>();
 	static {
 		TAG_ACTIONS.put("STYLE", TA_IGNORABLE_ELEMENT);
 		TAG_ACTIONS.put("SCRIPT", TA_IGNORABLE_ELEMENT);
@@ -306,7 +306,7 @@ public final class HTMLHighlighter {
 		TAG_ACTIONS.put("HEAD", TA_HEAD);
 	}
 
-	private final class Implementation extends AbstractSAXParser implements
+	private class Implementation extends AbstractSAXParser implements
 			ContentHandler {
 		StringBuilder html = new StringBuilder();
 

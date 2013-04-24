@@ -28,7 +28,7 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class LabelToBoilerplateFilter implements BoilerpipeFilter {
+public class LabelToBoilerplateFilter implements BoilerpipeFilter {
 	public static final LabelToBoilerplateFilter INSTANCE_STRICTLY_NOT_CONTENT = new LabelToBoilerplateFilter(DefaultLabels.STRICTLY_NOT_CONTENT);
 	
     private String[] labels;

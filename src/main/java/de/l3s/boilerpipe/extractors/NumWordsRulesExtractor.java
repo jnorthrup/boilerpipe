@@ -40,7 +40,7 @@ public class NumWordsRulesExtractor extends ExtractorBase {
     public boolean process(TextDocument doc)
             throws BoilerpipeProcessingException {
 
-        return NumWordsRulesClassifier.INSTANCE.process(doc);
+        return new NumWordsRulesClassifier().process(doc);
     }
 
 }

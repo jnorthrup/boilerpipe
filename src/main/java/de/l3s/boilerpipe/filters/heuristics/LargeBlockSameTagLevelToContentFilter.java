@@ -32,12 +32,9 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class LargeBlockSameTagLevelToContentFilter implements BoilerpipeFilter {
-    public static final LargeBlockSameTagLevelToContentFilter INSTANCE = new LargeBlockSameTagLevelToContentFilter();
-    private LargeBlockSameTagLevelToContentFilter() {
-    }
+public class LargeBlockSameTagLevelToContentFilter implements BoilerpipeFilter {
 
-    public boolean process(final TextDocument doc)
+    public boolean process(TextDocument doc)
             throws BoilerpipeProcessingException {
 
         boolean changes = false;
@@ -50,17 +47,14 @@ public final class LargeBlockSameTagLevelToContentFilter implements BoilerpipeFi
         	}
         }
         
-        if(tagLevel == -1) {
+        if(-1 == tagLevel) {
         	return false;
         }
         
         for (TextBlock tb : doc.getTextBlocks()) {
-            if (!tb.isContent()) {
-            	
-            	if(tb.getNumWords() >= 100 && tb.getTagLevel() == tagLevel) {
-	                tb.setIsContent(true);
-	                changes = true;
-            	}
+            if (!tb.isContent() && 100 <= tb.getNumWords() && tb.getTagLevel() == tagLevel) {
+                tb.setIsContent(true);
+                changes = true;
             }
         }
 

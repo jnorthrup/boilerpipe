@@ -27,7 +27,7 @@ import de.l3s.boilerpipe.extractors.DefaultExtractor;
  * 
  * @author Christian Kohlschütter
  */
-public final class SimpleEstimator {
+public class SimpleEstimator {
 
 	/**
 	 * Returns the singleton instance of {@link SimpleEstimator}

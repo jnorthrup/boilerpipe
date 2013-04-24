@@ -23,6 +23,8 @@ import de.l3s.boilerpipe.document.TextBlock;
 import de.l3s.boilerpipe.document.TextDocument;
 import de.l3s.boilerpipe.labels.DefaultLabels;
 
+import java.util.List;
+
 /**
  * Marks all {@link TextBlock}s "content" which are between the headline and the part that
  * has already been marked content, if they are marked {@link DefaultLabels#MIGHT_BE_CONTENT}.
@@ -31,43 +33,38 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class ExpandTitleToContentFilter implements BoilerpipeFilter {
-    public static final ExpandTitleToContentFilter INSTANCE = new ExpandTitleToContentFilter();
+public class ExpandTitleToContentFilter implements BoilerpipeFilter {
 
-    /**
-     * Returns the singleton instance for ExpandTitleToContentFilter.
-     */
-    public static ExpandTitleToContentFilter getInstance() {
-        return INSTANCE;
-    }
-
-    public boolean process(TextDocument doc)
-            throws BoilerpipeProcessingException {
+    public boolean process(TextDocument doc) {
         int i = 0;
         int title = -1;
         int contentStart = -1;
-        for (TextBlock tb : doc.getTextBlocks()) {
-            if (contentStart == -1 && tb.hasLabel(DefaultLabels.TITLE)) {
+        List<TextBlock> textBlocks = doc.getTextBlocks();
+        for (int i2 = 0, textBlocksSize = textBlocks.size(); i2 < textBlocksSize; i2++) {
+            TextBlock tb = textBlocks.get(i2);
+            if (-1 == contentStart && tb.hasLabel(DefaultLabels.TITLE)) {
                 title = i;
                 contentStart = -1;
             }
-            if (contentStart == -1 && tb.isContent()) {
+            if (-1 == contentStart && tb.isContent()) {
                 contentStart = i;
             }
-            
+
             i++;
         }
 
-        if (contentStart <= title || title == -1) {
-            return false;
-        }
-        boolean changes = false;
-        for (TextBlock tb : doc.getTextBlocks().subList(title, contentStart)) {
-            if (tb.hasLabel(DefaultLabels.MIGHT_BE_CONTENT)) {
-                changes = tb.setIsContent(true) | changes;
+        if (contentStart > title && -1 != title) {
+            boolean changes = false;
+            List<TextBlock> subList = doc.getTextBlocks().subList(title, contentStart);
+            for (int i1 = 0, subListSize = subList.size(); i1 < subListSize; i1++) {
+                TextBlock tb = subList.get(i1);
+                if (tb.hasLabel(DefaultLabels.MIGHT_BE_CONTENT)) {
+                    changes = tb.setIsContent(true) || changes;
+                }
             }
+            return changes;
         }
-        return changes;
+        return false;
     }
 
 }

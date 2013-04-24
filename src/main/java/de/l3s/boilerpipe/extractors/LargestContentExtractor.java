@@ -30,7 +30,7 @@ import de.l3s.boilerpipe.filters.heuristics.KeepLargestBlockFilter;
  * 
  * @author Christian Kohlschütter
  */
-public final class LargestContentExtractor extends ExtractorBase {
+public class LargestContentExtractor extends ExtractorBase {
     public static final LargestContentExtractor INSTANCE = new LargestContentExtractor();
 
     private LargestContentExtractor() {
@@ -45,7 +45,7 @@ public final class LargestContentExtractor extends ExtractorBase {
 
     public boolean process(TextDocument doc)
             throws BoilerpipeProcessingException {
-        return NumWordsRulesClassifier.INSTANCE.process(doc)
+        return new NumWordsRulesClassifier().process(doc)
                 | BlockProximityFusion.MAX_DISTANCE_1.process(doc)
                 | KeepLargestBlockFilter.INSTANCE.process(doc);
     }

@@ -27,7 +27,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class MarkEverythingBoilerplateFilter implements BoilerpipeFilter {
+public class MarkEverythingBoilerplateFilter implements BoilerpipeFilter {
     public static final MarkEverythingBoilerplateFilter INSTANCE = new MarkEverythingBoilerplateFilter();
     private MarkEverythingBoilerplateFilter() {
     }

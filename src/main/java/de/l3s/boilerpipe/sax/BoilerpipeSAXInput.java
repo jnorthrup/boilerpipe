@@ -31,7 +31,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class BoilerpipeSAXInput implements BoilerpipeInput {
+public class BoilerpipeSAXInput implements BoilerpipeInput {
     private final InputSource is;
 
     /**

@@ -64,9 +64,9 @@ public class TextDocument implements Cloneable {
     }
 
     /**
-     * Returns the "main" title for this document, or <code>null</code> if no
+     * Returns the "main" title for this document, or {@code null} if no
      * such title has ben set.
-     * 
+     *
      * @return The "main" title.
      */
     public String getTitle() {
@@ -132,7 +132,7 @@ public class TextDocument implements Cloneable {
     }
     
     public TextDocument clone() {
-    	final List<TextBlock> list = new ArrayList<TextBlock>(textBlocks.size());
+    	final List<TextBlock> list = new ArrayList<>(textBlocks.size());
     	for(TextBlock tb : textBlocks) {
     		list.add(tb.clone());
     	}

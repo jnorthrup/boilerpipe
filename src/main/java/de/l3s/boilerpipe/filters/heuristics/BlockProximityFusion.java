@@ -31,22 +31,18 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class BlockProximityFusion implements BoilerpipeFilter {
+public class BlockProximityFusion implements BoilerpipeFilter {
 
     private final int maxBlocksDistance;
 
     public static final BlockProximityFusion MAX_DISTANCE_1 = new BlockProximityFusion(
             1, false, false);
-    public static final BlockProximityFusion MAX_DISTANCE_1_SAME_TAGLEVEL = new BlockProximityFusion(
-            1, false, true);
-    public static final BlockProximityFusion MAX_DISTANCE_1_CONTENT_ONLY = new BlockProximityFusion(
-            1, true, false);
     public static final BlockProximityFusion MAX_DISTANCE_1_CONTENT_ONLY_SAME_TAGLEVEL = new BlockProximityFusion(
             1, true, true);
 
-    private final boolean contentOnly;
+    boolean contentOnly;
 
-	private final boolean sameTagLevelOnly;
+	boolean sameTagLevelOnly;
 
     /**
      * Creates a new {@link BlockProximityFusion} instance.
@@ -54,75 +50,66 @@ public final class BlockProximityFusion implements BoilerpipeFilter {
      * @param maxBlocksDistance The maximum distance in blocks.
      * @param contentOnly 
      */
-    public BlockProximityFusion(final int maxBlocksDistance,
-            final boolean contentOnly, final boolean sameTagLevelOnly) {
+    public BlockProximityFusion(int maxBlocksDistance,
+            boolean contentOnly, boolean sameTagLevelOnly) {
         this.maxBlocksDistance = maxBlocksDistance;
         this.contentOnly = contentOnly;
 		this.sameTagLevelOnly = sameTagLevelOnly;
     }
 
-    public boolean process(TextDocument doc)
-            throws BoilerpipeProcessingException {
+    public boolean process(TextDocument doc) {
         List<TextBlock> textBlocks = doc.getTextBlocks();
-        if (textBlocks.size() < 2) {
-            return false;
-        }
+        if (textBlocks.size() >= 2) {
 
-        boolean changes = false;
-        TextBlock prevBlock;
+            boolean changes = false;
+            TextBlock prevBlock;
 
-        int offset;
-        if (contentOnly) {
-            prevBlock = null;
-            offset = 0;
-            for (TextBlock tb : textBlocks) {
-                offset++;
-                if (tb.isContent()) {
-                    prevBlock = tb;
-                    break;
-                }
-            }
-            if (prevBlock == null) {
-                return false;
-            }
-        } else {
-            prevBlock = textBlocks.get(0);
-            offset = 1;
-        }
-
-        for (Iterator<TextBlock> it = textBlocks.listIterator(offset); it
-                .hasNext();) {
-            TextBlock block = it.next();
-            if (!block.isContent()) {
-                prevBlock = block;
-                continue;
-            }
-            int diffBlocks = block.getOffsetBlocksStart()
-                    - prevBlock.getOffsetBlocksEnd() - 1;
-            if (diffBlocks <= maxBlocksDistance) {
-                boolean ok = true;
-                if (contentOnly) {
-                    if (!prevBlock.isContent()
-                            || !block.isContent()) {
-                        ok = false;
+            int offset;
+            if (contentOnly) {
+                prevBlock = null;
+                offset = 0;
+                for (TextBlock tb : textBlocks) {
+                    offset++;
+                    if (tb.isContent()) {
+                        prevBlock = tb;
+                        break;
                     }
                 }
-                if(ok && sameTagLevelOnly && prevBlock.getTagLevel() != block.getTagLevel()) {
-                	ok = false;
-                }
-                if (ok) {
-                    prevBlock.mergeNext(block);
-                    it.remove();
-                    changes = true;
-                } else {
-                    prevBlock = block;
+                if (prevBlock == null) {
+                    return false;
                 }
             } else {
-                prevBlock = block;
+                prevBlock = textBlocks.get(0);
+                offset = 1;
             }
-        }
 
-        return changes;
+            for (Iterator<TextBlock> it = textBlocks.listIterator(offset); it
+                    .hasNext(); ) {
+                TextBlock block = it.next();
+                if (block.isContent()) {
+                    int diffBlocks = block.getOffsetBlocksStart()
+                            - prevBlock.getOffsetBlocksEnd() - 1;
+                    if (diffBlocks <= maxBlocksDistance) {
+                        boolean ok = true;
+                        if (contentOnly && (!prevBlock.isContent()
+                                || !block.isContent())) {
+                            ok = false;
+                        }
+                        if (ok && sameTagLevelOnly && prevBlock.getTagLevel() != block.getTagLevel()) {
+                            ok = false;
+                        }
+                        if (ok) {
+                            prevBlock.mergeNext(block);
+                            it.remove();
+                            changes = true;
+                        } else prevBlock = block;
+                    } else prevBlock = block;
+                } else prevBlock = block;
+            }
+
+            return changes;
+        }
+        return false;
     }
 
 }

@@ -28,7 +28,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class MinFulltextWordsFilter extends HeuristicFilterBase implements BoilerpipeFilter {
+public class MinFulltextWordsFilter extends HeuristicFilterBase implements BoilerpipeFilter {
     public static final MinFulltextWordsFilter DEFAULT_INSTANCE = new MinFulltextWordsFilter(
             30);
     private final int minWords;

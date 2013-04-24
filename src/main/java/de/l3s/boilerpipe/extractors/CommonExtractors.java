@@ -7,14 +7,14 @@ import de.l3s.boilerpipe.BoilerpipeExtractor;
  * 
  * @author Christian Kohlschütter
  */
-public final class CommonExtractors {
+public class CommonExtractors {
 	private CommonExtractors() {
 	}
 
 	/**
 	 * Works very well for most types of Article-like HTML.
 	 */
-	public static final ArticleExtractor ARTICLE_EXTRACTOR = ArticleExtractor.INSTANCE;
+	public static final ArticleExtractor ARTICLE_EXTRACTOR = new ArticleExtractor();
 
 	/**
 	 * Usually worse than {@link ArticleExtractor}, but simpler/no heuristics.

@@ -18,6 +18,7 @@
 package de.l3s.boilerpipe.filters.english;
 
 import java.util.Iterator;
+import java.util.List;
 
 import de.l3s.boilerpipe.BoilerpipeFilter;
 import de.l3s.boilerpipe.BoilerpipeProcessingException;
@@ -34,21 +35,10 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * @author Christian Kohlschütter
  * @see TerminatingBlocksFinder
  */
-public final class IgnoreBlocksAfterContentFilter extends HeuristicFilterBase implements BoilerpipeFilter {
-    public static final IgnoreBlocksAfterContentFilter DEFAULT_INSTANCE = new IgnoreBlocksAfterContentFilter(
-            60);
-    public static final IgnoreBlocksAfterContentFilter INSTANCE_200 = new IgnoreBlocksAfterContentFilter(
-            200);
-    private final int minNumWords;
+public class IgnoreBlocksAfterContentFilter extends HeuristicFilterBase implements BoilerpipeFilter {
+    private int minNumWords;
 
-    /**
-     * Returns the singleton instance for DeleteBlocksAfterContentFilter.
-     */
-    public static IgnoreBlocksAfterContentFilter getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public IgnoreBlocksAfterContentFilter(final int minNumWords) {
+    public IgnoreBlocksAfterContentFilter(int minNumWords) {
         this.minNumWords = minNumWords;
     }
 
@@ -58,10 +48,10 @@ public final class IgnoreBlocksAfterContentFilter extends HeuristicFilterBase im
 
         int numWords = 0;
         boolean foundEndOfText = false;
-        for (Iterator<TextBlock> it = doc.getTextBlocks().iterator(); it.hasNext();) {
-            TextBlock block = it.next();
-
-            final boolean endOfText = block
+        List<TextBlock> textBlocks = doc.getTextBlocks();
+        for (int i = 0, textBlocksSize = textBlocks.size(); i < textBlocksSize; i++) {
+            TextBlock block = textBlocks.get(i);
+            boolean endOfText = block
                     .hasLabel(DefaultLabels.INDICATES_END_OF_TEXT);
             if (block.isContent()) {
                 numWords += getNumFullTextWords(block);
