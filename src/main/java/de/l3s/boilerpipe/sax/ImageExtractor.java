@@ -28,7 +28,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class ImageExtractor {
+public class ImageExtractor {
 	public static final ImageExtractor INSTANCE = new ImageExtractor();
 	
 	/**
@@ -104,10 +104,10 @@ public final class ImageExtractor {
 	}
 	
 
-	private final class Implementation extends AbstractSAXParser implements
+	private class Implementation extends AbstractSAXParser implements
 			ContentHandler {
-		List<Image> linksHighlight = new ArrayList<Image>();
-		private List<Image> linksBuffer = new ArrayList<Image>();
+		List<Image> linksHighlight = new ArrayList<>();
+		private List<Image> linksBuffer = new ArrayList<>();
 
 		private int inIgnorableElement = 0;
 		private int characterElementIdx = 0;
@@ -251,7 +251,7 @@ public final class ImageExtractor {
 		}
 	};
 
-	private static Map<String, TagAction> TAG_ACTIONS = new HashMap<String, TagAction>();
+	private static Map<String, TagAction> TAG_ACTIONS = new HashMap<>();
 	static {
 		TAG_ACTIONS.put("STYLE", TA_IGNORABLE_ELEMENT);
 		TAG_ACTIONS.put("SCRIPT", TA_IGNORABLE_ELEMENT);

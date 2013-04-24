@@ -32,7 +32,7 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class BoilerplateBlockFilter implements BoilerpipeFilter {
+public class BoilerplateBlockFilter implements BoilerpipeFilter {
 	public static final BoilerplateBlockFilter INSTANCE = new BoilerplateBlockFilter(
 			null);
 	public static final BoilerplateBlockFilter INSTANCE_KEEP_TITLE = new BoilerplateBlockFilter(

@@ -42,7 +42,7 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class KeepLargestFulltextBlockFilter extends HeuristicFilterBase implements BoilerpipeFilter {
+public class KeepLargestFulltextBlockFilter extends HeuristicFilterBase implements BoilerpipeFilter {
     public static final KeepLargestFulltextBlockFilter INSTANCE = new KeepLargestFulltextBlockFilter();
 
     public boolean process(final TextDocument doc)

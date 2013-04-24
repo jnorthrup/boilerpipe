@@ -36,7 +36,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * @author Christian Kohlschütter
  * @see MinClauseWordsFilter
  */
-public final class SplitParagraphBlocksFilter implements BoilerpipeFilter {
+public class SplitParagraphBlocksFilter implements BoilerpipeFilter {
     public static final SplitParagraphBlocksFilter INSTANCE = new SplitParagraphBlocksFilter();
 
     /**
@@ -51,7 +51,7 @@ public final class SplitParagraphBlocksFilter implements BoilerpipeFilter {
         boolean changes = false;
 
         final List<TextBlock> blocks = doc.getTextBlocks();
-        final List<TextBlock> blocksNew = new ArrayList<TextBlock>();
+        final List<TextBlock> blocksNew = new ArrayList<>();
 
         for (TextBlock tb : blocks) {
             final String text = tb.getText();

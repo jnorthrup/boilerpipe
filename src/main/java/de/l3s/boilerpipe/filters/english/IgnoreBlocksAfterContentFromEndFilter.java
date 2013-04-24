@@ -34,7 +34,7 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * @author Christian Kohlschütter
  * @see TerminatingBlocksFinder
  */
-public final class IgnoreBlocksAfterContentFromEndFilter extends HeuristicFilterBase implements BoilerpipeFilter {
+public class IgnoreBlocksAfterContentFromEndFilter extends HeuristicFilterBase implements BoilerpipeFilter {
     public static final IgnoreBlocksAfterContentFromEndFilter INSTANCE = new IgnoreBlocksAfterContentFromEndFilter(
             );
 

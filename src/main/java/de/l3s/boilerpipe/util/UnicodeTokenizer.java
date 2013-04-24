@@ -17,6 +17,9 @@
  */
 package de.l3s.boilerpipe.util;
 
+import java.nio.Buffer;
+import java.nio.CharBuffer;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
@@ -28,18 +31,71 @@ import java.util.regex.Pattern;
 public class UnicodeTokenizer {
     private static final Pattern PAT_WORD_BOUNDARY = Pattern.compile("\\b");
     private static final Pattern PAT_NOT_WORD_BOUNDARY = Pattern
-            .compile("[\u2063]*([\\\"'\\.,\\!\\@\\-\\:\\;\\$\\?\\(\\)/])[\u2063]*");
+            .compile("[\u2063]*([\"'\\.,\\!\\@\\-\\:\\;\\$\\?\\(\\)/])[\u2063]*");
+                             final static      char[]a=
+                                              "\"'.,!@-:;$?()".toCharArray();
 
     /**
      * Tokenizes the text and returns an array of tokens.
      * 
+     *
      * @param text The text
      * @return The tokens
      */
-    public static String[] tokenize(final CharSequence text) {
-        return PAT_NOT_WORD_BOUNDARY.matcher(
-                PAT_WORD_BOUNDARY.matcher(text).replaceAll("\u2063"))
-                .replaceAll("$1").replaceAll("[ \u2063]+", " ").trim().split(
-                        "[ ]+");
+    public static Iterator<CharSequence> tokenize(final CharSequence text) {
+
+
+        return new Iterator<CharSequence>() {
+            CharBuffer buffer = CharBuffer.wrap(PAT_NOT_WORD_BOUNDARY.matcher(PAT_WORD_BOUNDARY.matcher(text).replaceAll("\u2063")).replaceAll("$1").trim());
+
+            @Override
+           public boolean hasNext() {
+
+               return buffer!=null&&buffer.hasRemaining() ;
+           }
+
+           @Override
+           public CharSequence next() {
+               buffer.mark();
+               boolean first = true;
+
+               while(buffer.hasRemaining()) {
+
+                   switch (buffer.get()) {
+                       case '\u2063':
+                       case ' ':
+                           if (first) {
+                               buffer.mark();
+                               continue;
+                           }else
+                           {
+                               int i = buffer.position()  ;
+                               int limit = buffer.limit();
+                               try{
+
+                               return ((CharBuffer) buffer .reset().limit(i-1)).slice();
+                               }finally {
+                                   buffer.limit(limit).position( i  );
+                               }
+                           }
+                       default:
+                            first=false;
+                   }
+               }
+
+               CharSequence slice=(CharSequence)buffer.reset();
+               buffer=null;
+
+               return slice;
+           }
+
+
+
+           @Override
+           public void remove() {
+
+           }
+       };
+
     }
 }

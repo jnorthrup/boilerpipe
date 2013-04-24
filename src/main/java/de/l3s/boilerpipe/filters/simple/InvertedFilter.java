@@ -29,7 +29,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class InvertedFilter implements BoilerpipeFilter {
+public class InvertedFilter implements BoilerpipeFilter {
     public static final InvertedFilter INSTANCE = new InvertedFilter();
     private InvertedFilter() {
     }

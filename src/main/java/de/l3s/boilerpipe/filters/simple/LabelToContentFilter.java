@@ -27,7 +27,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class LabelToContentFilter implements BoilerpipeFilter {
+public class LabelToContentFilter implements BoilerpipeFilter {
     private String[] labels;
 
     public LabelToContentFilter(final String... label) {

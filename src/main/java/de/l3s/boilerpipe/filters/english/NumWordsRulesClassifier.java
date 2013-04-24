@@ -25,6 +25,8 @@ import de.l3s.boilerpipe.BoilerpipeProcessingException;
 import de.l3s.boilerpipe.document.TextBlock;
 import de.l3s.boilerpipe.document.TextDocument;
 
+import static de.l3s.boilerpipe.document.TextBlock.EMPTY_START;
+
 /**
  * Classifies {@link TextBlock}s as content/not-content through rules that have
  * been determined using the C4.8 machine learning algorithm, as described in
@@ -34,14 +36,6 @@ import de.l3s.boilerpipe.document.TextDocument;
  * @author Christian Kohlschütter
  */
 public class NumWordsRulesClassifier implements BoilerpipeFilter {
-    public static final NumWordsRulesClassifier INSTANCE = new NumWordsRulesClassifier();
-
-    /**
-     * Returns the singleton instance for RulebasedBoilerpipeClassifier.
-     */
-    public static NumWordsRulesClassifier getInstance() {
-        return INSTANCE;
-    }
 
     public boolean process(TextDocument doc)
             throws BoilerpipeProcessingException {
@@ -49,68 +43,38 @@ public class NumWordsRulesClassifier implements BoilerpipeFilter {
         boolean hasChanges = false;
 
         ListIterator<TextBlock> it = textBlocks.listIterator();
-        if (!it.hasNext()) {
-            return false;
-        }
-        TextBlock prevBlock = TextBlock.EMPTY_START;
-        TextBlock currentBlock = it.next();
-        TextBlock nextBlock = it.hasNext() ? it.next() : TextBlock.EMPTY_START;
+        if (it.hasNext()) {
+            TextBlock prevBlock = EMPTY_START;
+            TextBlock currentBlock = it.next();
+            TextBlock nextBlock = it.hasNext() ? it.next() : EMPTY_START;
 
-        hasChanges = classify(prevBlock, currentBlock, nextBlock) | hasChanges;
+            hasChanges = classify(prevBlock, currentBlock, nextBlock) || hasChanges;
 
-        if (nextBlock != TextBlock.EMPTY_START) {
-            while (it.hasNext()) {
+            if (nextBlock != EMPTY_START) {
+                while (it.hasNext()) {
+                    prevBlock = currentBlock;
+                    currentBlock = nextBlock;
+                    nextBlock = it.next();
+                    hasChanges = classify(prevBlock, currentBlock, nextBlock) || hasChanges;
+                }
                 prevBlock = currentBlock;
                 currentBlock = nextBlock;
-                nextBlock = it.next();
-                hasChanges = classify(prevBlock, currentBlock, nextBlock)
-                        | hasChanges;
+                nextBlock = EMPTY_START;
+                hasChanges = classify(prevBlock, currentBlock, nextBlock) || hasChanges;
             }
-            prevBlock = currentBlock;
-            currentBlock = nextBlock;
-            nextBlock = TextBlock.EMPTY_START;
-            hasChanges = classify(prevBlock, currentBlock, nextBlock)
-                    | hasChanges;
-        }
 
-        return hasChanges;
+            return hasChanges;
+        }
+        return false;
     }
 
-    protected boolean classify(final TextBlock prev, final TextBlock curr,
-            final TextBlock next) {
-        final boolean isContent;
+    protected boolean classify(TextBlock prev, TextBlock curr,
+            TextBlock next) {
 
-        if (curr.getLinkDensity() <= 0.333333) {
-            if (prev.getLinkDensity() <= 0.555556) {
-                if (curr.getNumWords() <= 16) {
-                    if (next.getNumWords() <= 15) {
-                        if (prev.getNumWords() <= 4) {
-                            isContent = false;
-                        } else {
-                            isContent = true;
-                        }
-                    } else {
-                        isContent = true;
-                    }
-                } else {
-                    isContent = true;
-                }
-            } else {
-                if (curr.getNumWords() <= 40) {
-                    if (next.getNumWords() <= 17) {
-                        isContent = false;
-                    } else {
-                        isContent = true;
-                    }
-                } else {
-                    isContent = true;
-                }
-            }
-        } else {
-            isContent = false;
-        }
-
-        return curr.setIsContent(isContent);
+        int numWords = next.getNumWords();
+        int numWords1 = curr.getNumWords();
+        float linkDensity = curr.getLinkDensity();
+        return curr.setIsContent(linkDensity <= 0.333333 && (prev.getLinkDensity() <= 0.555556 ? numWords1 > 16 || numWords > 15 || prev.getNumWords() > 4 : numWords1 > 40 || numWords > 17));
     }
 
 }

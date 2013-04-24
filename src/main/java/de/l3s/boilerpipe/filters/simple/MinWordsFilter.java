@@ -27,7 +27,7 @@ import de.l3s.boilerpipe.document.TextDocument;
  * 
  * @author Christian Kohlschütter
  */
-public final class MinWordsFilter implements BoilerpipeFilter {
+public class MinWordsFilter implements BoilerpipeFilter {
     private final int minWords;
 
     public MinWordsFilter(final int minWords) {

@@ -30,11 +30,7 @@ abstract class HeuristicFilterBase {
         return getNumFullTextWords(tb, 9);
     }
     protected static int getNumFullTextWords(final TextBlock tb, float minTextDensity) {
-        if(tb.getTextDensity() >= minTextDensity) {
-            return tb.getNumWords();
-        } else {
-            return 0;
-        }
+        return tb.getTextDensity() >= minTextDensity ? tb.getNumWords() : 0;
     }
 
 }

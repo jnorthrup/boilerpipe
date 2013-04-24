@@ -36,22 +36,20 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class KeepLargestBlockFilter implements BoilerpipeFilter {
+public class KeepLargestBlockFilter implements BoilerpipeFilter {
 	public static final KeepLargestBlockFilter INSTANCE = new KeepLargestBlockFilter(
 			false, 0);
-	public static final KeepLargestBlockFilter INSTANCE_EXPAND_TO_SAME_TAGLEVEL = new KeepLargestBlockFilter(
-			true, 0);
-	public static final KeepLargestBlockFilter INSTANCE_EXPAND_TO_SAME_TAGLEVEL_MIN_WORDS = new KeepLargestBlockFilter(
+    public static final KeepLargestBlockFilter INSTANCE_EXPAND_TO_SAME_TAGLEVEL_MIN_WORDS = new KeepLargestBlockFilter(
 			true, 150);
 	private final boolean expandToSameLevelText;
 	private final int minWords;
 
-	public KeepLargestBlockFilter(boolean expandToSameLevelText, final int minWords) {
+	public KeepLargestBlockFilter(boolean expandToSameLevelText, int minWords) {
 		this.expandToSameLevelText = expandToSameLevelText;
 		this.minWords = minWords;
 	}
 
-	public boolean process(final TextDocument doc)
+	public boolean process(TextDocument doc)
 			throws BoilerpipeProcessingException {
 		List<TextBlock> textBlocks = doc.getTextBlocks();
 		if (textBlocks.size() < 2) {
@@ -67,7 +65,7 @@ public final class KeepLargestBlockFilter implements BoilerpipeFilter {
 		int n = -1;
 		for (TextBlock tb : textBlocks) {
 			if (tb.isContent()) {
-				final int nw = tb.getNumWords();
+				int nw = tb.getNumWords();
 				
 				if (nw > maxNumWords) {
 					largestBlock = tb;
@@ -96,7 +94,7 @@ public final class KeepLargestBlockFilter implements BoilerpipeFilter {
 			for (ListIterator<TextBlock> it = textBlocks.listIterator(n); it
 					.hasPrevious();) {
 				TextBlock tb = it.previous();
-				final int tl = tb.getTagLevel();
+				int tl = tb.getTagLevel();
 				if(tl < level) {
 					break;
 				} else if(tl == level) {
@@ -108,7 +106,7 @@ public final class KeepLargestBlockFilter implements BoilerpipeFilter {
 			for (ListIterator<TextBlock> it = textBlocks.listIterator(n); it
 			.hasNext();) {
 				TextBlock tb = it.next();
-				final int tl = tb.getTagLevel();
+				int tl = tb.getTagLevel();
 				if(tl < level) {
 					break;
 				} else if(tl == level) {

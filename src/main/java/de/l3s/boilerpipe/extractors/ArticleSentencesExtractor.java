@@ -27,7 +27,7 @@ import de.l3s.boilerpipe.filters.simple.SplitParagraphBlocksFilter;
  * 
  * @author Christian Kohlschütter
  */
-public final class ArticleSentencesExtractor extends ExtractorBase {
+public class ArticleSentencesExtractor extends ExtractorBase {
     public static final ArticleSentencesExtractor INSTANCE = new ArticleSentencesExtractor();
 
     /**
@@ -41,7 +41,7 @@ public final class ArticleSentencesExtractor extends ExtractorBase {
             throws BoilerpipeProcessingException {
         return
 
-        ArticleExtractor.INSTANCE.process(doc)
+        new ArticleExtractor().process(doc)
                 | SplitParagraphBlocksFilter.INSTANCE.process(doc)
                 | MinClauseWordsFilter.INSTANCE.process(doc);
     }

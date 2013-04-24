@@ -37,32 +37,25 @@ import de.l3s.boilerpipe.filters.simple.BoilerplateBlockFilter;
  * 
  * @author Christian Kohlschütter
  */
-public final class ArticleExtractor extends ExtractorBase {
-    public static final ArticleExtractor INSTANCE = new ArticleExtractor();
+public class ArticleExtractor extends ExtractorBase {
 
-    /**
-     * Returns the singleton instance for {@link ArticleExtractor}.
-     */
-    public static ArticleExtractor getInstance() {
-        return INSTANCE;
-    }
-    
     public boolean process(TextDocument doc)
             throws BoilerpipeProcessingException {
         return
 
         TerminatingBlocksFinder.INSTANCE.process(doc)
                 | new DocumentTitleMatchClassifier(doc.getTitle()).process(doc)
-                | NumWordsRulesClassifier.INSTANCE.process(doc)
-                | IgnoreBlocksAfterContentFilter.DEFAULT_INSTANCE.process(doc)
-                | TrailingHeadlineToBoilerplateFilter.INSTANCE.process(doc)
+                | new NumWordsRulesClassifier().process(doc)
+                | new IgnoreBlocksAfterContentFilter(
+                        60).process(doc)
+                | new TrailingHeadlineToBoilerplateFilter().process(doc)
                 | BlockProximityFusion.MAX_DISTANCE_1.process(doc)
                 | BoilerplateBlockFilter.INSTANCE_KEEP_TITLE.process(doc)
                 | BlockProximityFusion.MAX_DISTANCE_1_CONTENT_ONLY_SAME_TAGLEVEL.process(doc)
                 | KeepLargestBlockFilter.INSTANCE_EXPAND_TO_SAME_TAGLEVEL_MIN_WORDS.process(doc)
-                | ExpandTitleToContentFilter.INSTANCE.process(doc)
-                | LargeBlockSameTagLevelToContentFilter.INSTANCE.process(doc)
-                | ListAtEndFilter.INSTANCE.process(doc)
+                | new ExpandTitleToContentFilter().process(doc)
+                | new LargeBlockSameTagLevelToContentFilter().process(doc)
+                | new ListAtEndFilter().process(doc)
         ;
     }
 }

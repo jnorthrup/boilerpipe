@@ -27,14 +27,14 @@ import de.l3s.boilerpipe.document.TextDocument;
  */
 public interface BoilerpipeFilter {
     /**
-     * Processes the given document <code>doc</code>.
-     * 
+     * Processes the given document {@code doc}.
+     *
      * @param doc
      *            The {@link TextDocument} that is to be processed.
-     * @return <code>true</code> if changes have been made to the
+     * @return {@code true} if changes have been made to the
      *         {@link TextDocument}.
      * @throws BoilerpipeProcessingException
      */
-    boolean process(final TextDocument doc)
+    boolean process(TextDocument doc)
             throws BoilerpipeProcessingException;
 }

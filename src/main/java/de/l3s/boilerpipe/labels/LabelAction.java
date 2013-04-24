@@ -38,7 +38,7 @@ public class LabelAction {
         addLabelsTo(tb);
     }
     
-    protected final void addLabelsTo(final TextBlock tb) {
+    protected void addLabelsTo(final TextBlock tb) {
         tb.addLabels(labels);
     }
     

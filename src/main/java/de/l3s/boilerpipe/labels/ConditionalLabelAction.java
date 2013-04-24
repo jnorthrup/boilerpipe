@@ -25,7 +25,7 @@ import de.l3s.boilerpipe.document.TextBlock;
  * 
  * @author Christian Kohlschütter
  */
-public final class ConditionalLabelAction extends LabelAction {
+public class ConditionalLabelAction extends LabelAction {
 
     private final TextBlockCondition condition;
 

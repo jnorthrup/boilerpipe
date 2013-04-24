@@ -28,14 +28,9 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
  * 
  * @author Christian Kohlschütter
  */
-public final class ListAtEndFilter implements BoilerpipeFilter {
-	public static final ListAtEndFilter INSTANCE = new ListAtEndFilter();
+public class ListAtEndFilter implements BoilerpipeFilter {
 
-	private ListAtEndFilter() {
-	}
-
-	public boolean process(final TextDocument doc)
-			throws BoilerpipeProcessingException {
+	public boolean process(TextDocument doc) {
 
 		boolean changes = false;
 

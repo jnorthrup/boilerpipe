@@ -22,7 +22,7 @@ package de.l3s.boilerpipe.document;
  * 
  * @author Christian Kohlschuetter
  */
-public final class TextDocumentStatistics {
+public class TextDocumentStatistics {
     private int numWords = 0;
     private int numBlocks = 0;
 

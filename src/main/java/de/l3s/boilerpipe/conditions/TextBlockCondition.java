@@ -28,10 +28,10 @@ import de.l3s.boilerpipe.labels.ConditionalLabelAction;
  */
 public interface TextBlockCondition {
     /**
-     * Returns <code>true</code> iff the given {@link TextBlock} tb meets the defined condition.
-     * 
+     * Returns {@code true} iff the given {@link TextBlock} tb meets the defined condition.
+     *
      * @param tb
-     * @return <code><true</code> iff the condition is met.
+     * @return {@code <true} iff the condition is met.
      */
     boolean meetsCondition(final TextBlock tb);
 }

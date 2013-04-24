@@ -175,7 +175,7 @@ public class HTMLElements {
      * Initializes the element information.
      * <p>
      * <strong>Note:</strong>
-     * The <code>getElement</code> method requires that the HTML elements
+     * The {@code getElement} method requires that the HTML elements
      * are added to the list in alphabetical order. If new elements are
      * added, then they <em>must</em> be inserted in alphabetical order.
      */
@@ -499,7 +499,7 @@ public class HTMLElements {
      *
      * @param code The element code.
      */
-    public static final Element getElement(short code) {
+    public static Element getElement(short code) {
         return ELEMENTS.data[code];
     } // getElement(short):Element
 
@@ -508,7 +508,7 @@ public class HTMLElements {
      *
      * @param ename The element name.
      */
-    public static final Element getElement(String ename) {
+    public static Element getElement(String ename) {
         return getElement(ename, NO_SUCH_ELEMENT);
     } // getElement(String):Element
 
@@ -518,7 +518,7 @@ public class HTMLElements {
      * @param ename The element name.
      * @param element The default element to return if not found.
      */
-    public static final Element getElement(String ename, Element element) {
+    public static Element getElement(String ename, Element element) {
 
         if (ename.length() > 0) {
             int c = ename.charAt(0);
@@ -678,22 +678,22 @@ public class HTMLElements {
         //
 
         /** Returns true if this element is an inline element. */
-        public final boolean isInline() {
+        public boolean isInline() {
             return (flags & INLINE) != 0;
         } // isInline():boolean
 
         /** Returns true if this element is a block element. */
-        public final boolean isBlock() {
+        public boolean isBlock() {
             return (flags & BLOCK) != 0;
         } // isBlock():boolean
 
         /** Returns true if this element is an empty element. */
-        public final boolean isEmpty() {
+        public boolean isEmpty() {
             return (flags & EMPTY) != 0;
         } // isEmpty():boolean
 
         /** Returns true if this element is a container element. */
-        public final boolean isContainer() {
+        public boolean isContainer() {
             return (flags & CONTAINER) != 0;
         } // isContainer():boolean
 
@@ -701,7 +701,7 @@ public class HTMLElements {
          * Returns true if this element is special -- if its content
          * should be parsed ignoring markup.
          */
-        public final boolean isSpecial() {
+        public boolean isSpecial() {
             return (flags & SPECIAL) != 0;
         } // isSpecial():boolean
 
@@ -747,7 +747,7 @@ public class HTMLElements {
         /**
          * Indicates if the provided element is an accepted parent of current element
          * @param element the element to test for "paternity"
-         * @return <code>true</code> if <code>element</code> belongs to the {@link #parent}
+         * @return {@code true} if {@code element} belongs to the {@link #parent}
          */
 		public boolean isParent(final Element element) {
 			if (parent == null)
