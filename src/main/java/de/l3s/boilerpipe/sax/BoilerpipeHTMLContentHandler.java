@@ -17,12 +17,13 @@
  */
 package de.l3s.boilerpipe.sax;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import javolution.text.TextBuilder;
-import javolution.util.FastList;
-import javolution.util.FastTable;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -42,40 +43,40 @@ import de.l3s.boilerpipe.util.UnicodeTokenizer;
 public class BoilerpipeHTMLContentHandler implements ContentHandler {
 
 	private final Map<String, TagAction> tagActions;
-	private String title;
+	private String title = null;
 
 	static final String ANCHOR_TEXT_START = "$\ue00a<";
 	static final String ANCHOR_TEXT_END = ">\ue00a$";
 
-	TextBuilder tokenBuffer =TextBuilder.newInstance();
-	TextBuilder textBuffer = TextBuilder.newInstance();
+	StringBuilder tokenBuffer = new StringBuilder();
+	StringBuilder textBuffer = new StringBuilder();
 
-	int inBody;
-	int inAnchor;
-	int inIgnorableElement;
+	int inBody = 0;
+	int inAnchor = 0;
+	int inIgnorableElement = 0;
 
-	int tagLevel;
+	int tagLevel = 0;
 	int blockTagLevel = -1;
 
-	boolean sbLastWasWhitespace;
-	private int textElementIdx;
+	boolean sbLastWasWhitespace = false;
+	private int textElementIdx = 0;
 
-	private final List<TextBlock> textBlocks = FastTable.newInstance();
+	private final List<TextBlock> textBlocks = new ArrayList<TextBlock>();
 
-	private String lastStartTag;
+	private String lastStartTag = null;
 	@SuppressWarnings("unused")
-	private String lastEndTag;
+	private String lastEndTag = null;
 	@SuppressWarnings("unused")
-	private Event lastEvent;
+	private Event lastEvent = null;
 
-	private int offsetBlocks;
+	private int offsetBlocks = 0;
 	private BitSet currentContainedTextElements = new BitSet();
 
-	private boolean flush;
-	boolean inAnchorText;
+	private boolean flush = false;
+	boolean inAnchorText = false;
 
-	FastList<FastList<LabelAction>> labelStacks = FastList.newInstance();
-	FastList<Integer> fontSizeStack = FastList.newInstance();
+	LinkedList<LinkedList<LabelAction>> labelStacks = new LinkedList<LinkedList<LabelAction>>();
+	LinkedList<Integer> fontSizeStack = new LinkedList<Integer>();
 
 	/**
 	 * Recycles this instance.
@@ -119,7 +120,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	 *            The {@link TagActionMap} to use, e.g.
 	 *            {@link DefaultTagActionMap}.
 	 */
-	public BoilerpipeHTMLContentHandler(TagActionMap tagActions) {
+	public BoilerpipeHTMLContentHandler(final TagActionMap tagActions) {
 		this.tagActions = tagActions;
 	}
 
@@ -170,7 +171,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 		labelStacks.add(null);
 
 		TagAction ta = tagActions.get(localName);
-		if (null != ta) {
+		if (ta != null) {
 			if(ta.changesTagLevel()) {
 				tagLevel++;
 			}
@@ -188,13 +189,13 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		TagAction ta = tagActions.get(localName);
-		if (null != ta) {
+		if (ta != null) {
 			flush = ta.end(this, localName, qName) | flush;
 		} else {
 			flush = true;
 		}
 		
-		if(null == ta || ta.changesTagLevel()) {
+		if(ta == null || ta.changesTagLevel()) {
 			tagLevel--;
 		}
 		
@@ -219,18 +220,18 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 			flush = false;
 		}
 
-		if (0 != inIgnorableElement) {
+		if (inIgnorableElement != 0) {
 			return;
 		}
 
 		char c;
 		boolean startWhitespace = false;
 		boolean endWhitespace = false;
-		if (0 == length) {
+		if (length == 0) {
 			return;
 		}
 
-		int end = start + length;
+		final int end = start + length;
 		for (int i = start; i < end; i++) {
 			if (Character.isWhitespace(ch[i])) {
 				ch[i] = ' ';
@@ -238,7 +239,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 		}
 		while (start < end) {
 			c = ch[start];
-			if (' ' == c) {
+			if (c == ' ') {
 				startWhitespace = true;
 				start++;
 				length--;
@@ -246,16 +247,16 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				break;
 			}
 		}
-		while (0 < length) {
+		while (length > 0) {
 			c = ch[start + length - 1];
-			if (' ' == c) {
+			if (c == ' ') {
 				endWhitespace = true;
 				length--;
 			} else {
 				break;
 			}
 		}
-		if (0 == length) {
+		if (length == 0) {
 			if (startWhitespace || endWhitespace) {
 				if (!sbLastWasWhitespace) {
 					textBuffer.append(' ');
@@ -275,7 +276,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 			}
 		}
 		
-		if (-1 == blockTagLevel) {
+		if (blockTagLevel == -1) {
 			blockTagLevel = tagLevel;
 		}
 
@@ -297,17 +298,16 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	}
 
 	public void flushBlock() {
-        switch (inBody) {
-            case 0:
-                if ("TITLE".equalsIgnoreCase(lastStartTag) && 0 == inBody) {
-                    setTitle(tokenBuffer.toString().trim());
-                }
-                textBuffer.setLength(0);
-                tokenBuffer.setLength(0);
-                return;
-        }
+		if (inBody == 0) {
+			if ("TITLE".equalsIgnoreCase(lastStartTag) && inBody == 0) {
+				setTitle(tokenBuffer.toString().trim());
+			}
+			textBuffer.setLength(0);
+			tokenBuffer.setLength(0);
+			return;
+		}
 
-		int length = tokenBuffer.length();
+		final int length = tokenBuffer.length();
 		switch (length) {
 		case 0:
 			return;
@@ -318,18 +318,17 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				return;
 			}
 		}
-        Iterator<CharSequence> tokens = UnicodeTokenizer.tokenize(tokenBuffer);
+		final String[] tokens = UnicodeTokenizer.tokenize(tokenBuffer);
 
 		int numWords = 0;
 		int numLinkedWords = 0;
 		int numWrappedLines = 0;
 		int currentLineLength = -1; // don't count the first space
-		int maxLineLength = 80;
+		final int maxLineLength = 80;
 		int numTokens = 0;
 		int numWordsCurrentLine = 0;
-        while (tokens.hasNext()) {
-            CharSequence token = tokens.next();
 
+		for (String token : tokens) {
 			if (ANCHOR_TEXT_START.equals(token)) {
 				inAnchorText = true;
 			} else if (ANCHOR_TEXT_END.equals(token)) {
@@ -341,7 +340,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				if (inAnchorText) {
 					numLinkedWords++;
 				}
-				int tokenLength = token.length();
+				final int tokenLength = token.length();
 				currentLineLength += tokenLength + 1;
 				if (currentLineLength > maxLineLength) {
 					numWrappedLines++;
@@ -352,43 +351,49 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 				numTokens++;
 			}
 		}
-        if (0 != numTokens) {
-            int numWordsInWrappedLines;
-            switch (numWrappedLines) {
-                case 0:
-                    numWordsInWrappedLines = numWords;
-                    numWrappedLines = 1;
-                    break;
-                default:
-                    numWordsInWrappedLines = numWords - numWordsCurrentLine;
-                    break;
-            }
+		if (numTokens == 0) {
+			return;
+		}
+		int numWordsInWrappedLines;
+		if (numWrappedLines == 0) {
+			numWordsInWrappedLines = numWords;
+			numWrappedLines = 1;
+		} else {
+			numWordsInWrappedLines = numWords - numWordsCurrentLine;
+		}
 
-            TextBlock tb = new TextBlock(textBuffer.toString().trim(),
-                    currentContainedTextElements, numWords, numLinkedWords,
-                    numWordsInWrappedLines, numWrappedLines, offsetBlocks);
-            currentContainedTextElements = new BitSet();
+		TextBlock tb = new TextBlock(textBuffer.toString().trim(),
+				currentContainedTextElements, numWords, numLinkedWords,
+				numWordsInWrappedLines, numWrappedLines, offsetBlocks);
+		currentContainedTextElements = new BitSet();
 
-            offsetBlocks++;
+		offsetBlocks++;
 
-            textBuffer.setLength(0);
-            tokenBuffer.setLength(0);
+		textBuffer.setLength(0);
+		tokenBuffer.setLength(0);
 
-            tb.setTagLevel(blockTagLevel);
-            addTextBlock(tb);
-            blockTagLevel = -1;
-        }
+		tb.setTagLevel(blockTagLevel);
+		addTextBlock(tb);
+		blockTagLevel = -1;
 	}
 
-	protected void addTextBlock(TextBlock tb) {
+	protected void addTextBlock(final TextBlock tb) {
 
-		for (Integer l : fontSizeStack)
-            if (null != l) {
-                tb.addLabel("font-" + l);
-                break;
-            }
-		for ( List<LabelAction> labelStack : labelStacks)
-            if (null != labelStack) for (LabelAction labels : labelStack) if (null != labels) labels.addTo(tb);
+		for (Integer l : fontSizeStack) {
+			if (l != null) {
+				tb.addLabel("font-" + l);
+				break;
+			}
+		}
+		for (LinkedList<LabelAction> labelStack : labelStacks) {
+			if (labelStack != null) {
+				for (LabelAction labels : labelStack) {
+					if (labels != null) {
+						labels.addTo(tb);
+					}
+				}
+			}
+		}
 
 		textBlocks.add(tb);
 	}
@@ -396,7 +401,7 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	private static final Pattern PAT_VALID_WORD_CHARACTER = Pattern
 			.compile("[\\p{L}\\p{Nd}\\p{Nl}\\p{No}]");
 
-	private static boolean isWord(CharSequence token) {
+	private static boolean isWord(final String token) {
 		return PAT_VALID_WORD_CHARACTER.matcher(token).find();
 	}
 
@@ -409,9 +414,10 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 	}
 
 	public void setTitle(String s) {
-        if (null != s && 0 != s.length()) {
-            title = s;
-        }
+		if (s == null || s.length() == 0) {
+			return;
+		}
+		title = s;
 	}
 
 	/**
@@ -435,11 +441,11 @@ public class BoilerpipeHTMLContentHandler implements ContentHandler {
 		}
 	}
 
-	public void addLabelAction(LabelAction la)
+	public void addLabelAction(final LabelAction la)
 			throws IllegalStateException {
-		FastList<LabelAction> labelStack = labelStacks.getLast();
-		if (null == labelStack) {
-			labelStack = FastList.newInstance();
+		LinkedList<LabelAction> labelStack = labelStacks.getLast();
+		if (labelStack == null) {
+			labelStack = new LinkedList<LabelAction>();
 			labelStacks.removeLast();
 			labelStacks.add(labelStack);
 		}
