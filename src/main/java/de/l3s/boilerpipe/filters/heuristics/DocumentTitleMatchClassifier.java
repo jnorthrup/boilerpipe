@@ -29,145 +29,139 @@ import de.l3s.boilerpipe.labels.DefaultLabels;
 
 /**
  * Marks {@link TextBlock}s which contain parts of the HTML
- * <code>&lt;TITLE&gt;</code> tag, using some heuristics which are quite
+ * {@code &lt;TITLE&gt;} tag, using some heuristics which are quite
  * specific to the news domain.
- * 
+ *
  * @author Christian Kohlschütter
  */
-public final class DocumentTitleMatchClassifier implements BoilerpipeFilter {
+public class DocumentTitleMatchClassifier implements BoilerpipeFilter {
 
 	private final Set<String> potentialTitles;
 
 	public DocumentTitleMatchClassifier(String title) {
-		if (title == null) {
-			this.potentialTitles = null;
-		} else {
-			
-			title = title.replace('\u00a0', ' ');
-			title = title.replace("'", "");
-			
-			title = title.trim().toLowerCase();
-			
-			if (title.length() == 0) {
-				this.potentialTitles = null;
-			} else {
-				this.potentialTitles = new HashSet<String>();
+        if (title != null) {
 
-				potentialTitles.add(title);
+            title = title.replace('\u00a0', ' ');
+            title = title.replace("'", "");
 
-				String p;
+            title = title.trim().toLowerCase();
 
-				p = getLongestPart(title, "[ ]*[\\|»|-][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				p = getLongestPart(title, "[ ]*[\\|»|:][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				p = getLongestPart(title, "[ ]*[\\|»|:\\(\\)][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				p = getLongestPart(title, "[ ]*[\\|»|:\\(\\)\\-][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				p = getLongestPart(title, "[ ]*[\\|»|,|:\\(\\)\\-][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				p = getLongestPart(title, "[ ]*[\\|»|,|:\\(\\)\\-\u00a0][ ]*");
-				if (p != null) {
-					potentialTitles.add(p);
-				}
-				
-				addPotentialTitles(potentialTitles, title, "[ ]+[\\|][ ]+", 4);
-				addPotentialTitles(potentialTitles, title, "[ ]+[\\-][ ]+", 4);
-				
-				potentialTitles.add(title.replaceFirst(" - [^\\-]+$", ""));
-				potentialTitles.add(title.replaceFirst("^[^\\-]+ - ", ""));
-			}
-		}
-	}
+if (title.length() != 0) {
+potentialTitles = new HashSet<>();
+
+potentialTitles.add(title);
+
+String p;
+
+p = getLongestPart(title, "[ ]*[\\|»|-][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+p = getLongestPart(title, "[ ]*[\\|»|:][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+p = getLongestPart(title, "[ ]*[\\|»|:\\(\\)][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+p = getLongestPart(title, "[ ]*[\\|»|:\\(\\)\\-][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+p = getLongestPart(title, "[ ]*[\\|»|,|:\\(\\)\\-][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+p = getLongestPart(title, "[ ]*[\\|»|,|:\\(\\)\\-\u00a0][ ]*");
+if (p != null) {
+potentialTitles.add(p);
+}
+
+addPotentialTitles(potentialTitles, title, "[ ]+[\\|][ ]+", 4);
+addPotentialTitles(potentialTitles, title, "[ ]+[\\-][ ]+", 4);
+
+potentialTitles.add(title.replaceFirst(" - [^\\-]+$", ""));
+potentialTitles.add(title.replaceFirst("^[^\\-]+ - ", ""));
+} else {
+potentialTitles = null;
+}
+} else {
+potentialTitles = null;
+}
+    }
 
 	public Set<String> getPotentialTitles() {
 		return potentialTitles;
 	}
 	
-	private void addPotentialTitles(final Set<String> potentialTitles, final String title, final String pattern, final int minWords) {
+	private void addPotentialTitles(Set<String> potentialTitles, String title, String pattern, int minWords) {
 		String[] parts = title.split(pattern);
-		if (parts.length == 1) {
-			return;
-		}
-		for (int i = 0; i < parts.length; i++) {
-			String p = parts[i];
-			if (p.contains(".com")) {
-				continue;
-			}
-			final int numWords = p.split("[\b ]+").length;
-			if (numWords >=minWords) {
-				potentialTitles.add(p);
-			}
-		}
+        if (parts.length != 1) {
+            for (String p : parts) {
+                if (!p.contains(".com")) {
+
+                    int numWords = p.split("[\b ]+").length;
+                    if (numWords >= minWords) {
+                        potentialTitles.add(p);
+                    }
+                }
+            }
+        }
 	}
 
-	private String getLongestPart(final String title, final String pattern) {
+	private String getLongestPart(String title, String pattern) {
 		String[] parts = title.split(pattern);
-		if (parts.length == 1) {
-			return null;
-		}
-		int longestNumWords = 0;
-		String longestPart = "";
-		for (int i = 0; i < parts.length; i++) {
-			String p = parts[i];
-			if (p.contains(".com")) {
-				continue;
-			}
-			final int numWords = p.split("[\b ]+").length;
-			if (numWords > longestNumWords || p.length() > longestPart.length()) {
-				longestNumWords = numWords;
-				longestPart = p;
-			}
-		}
-		if (longestPart.length() == 0) {
-			return null;
-		} else {
-			return longestPart.trim();
-		}
-	}
+        if (parts.length != 1) {
+            int longestNumWords = 0;
+            String longestPart = "";
+            for (int i = 0, partsLength = parts.length; i < partsLength; i++) {
+                String p = parts[i];
+                if (p.contains(".com")) {
+                    continue;
+                }
+                int numWords = p.split("[\b ]+").length;
+                if (numWords > longestNumWords || p.length() > longestPart.length()) {
+                    longestNumWords = numWords;
+                    longestPart = p;
+                }
+            }
+            return longestPart.length() == 0 ? null : longestPart.trim();
+        }
+        return null;
+    }
 	
 	private static final Pattern PAT_REMOVE_CHARACTERS = Pattern.compile("[\\?\\!\\.\\-\\:]+");
 
 	public boolean process(TextDocument doc)
 			throws BoilerpipeProcessingException {
-		if (potentialTitles == null) {
-			return false;
-		}
-		boolean changes = false;
-		
-		for (final TextBlock tb : doc.getTextBlocks()) {
-			String text = tb.getText();
-			
-			text = text.replace('\u00a0', ' ');
-			text = text.replace("'", "");
+        if (potentialTitles != null) {
+            boolean changes = false;
 
-			text = text.trim().toLowerCase();
+            for (TextBlock tb : doc.getTextBlocks()) {
+                String text = tb.getText();
 
-			if (potentialTitles.contains(text)) {
-				tb.addLabel(DefaultLabels.TITLE);
-				changes = true;
-				break;
-			}
-			
-			text = PAT_REMOVE_CHARACTERS.matcher(text).replaceAll("").trim();
-			if (potentialTitles.contains(text)) {
-				tb.addLabel(DefaultLabels.TITLE);
-				changes = true;
-				break;
-			}
-		}
-		return changes;
-	}
+                text = text.replace('\u00a0', ' ');
+                text = text.replace("'", "");
+
+                text = text.trim().toLowerCase();
+
+                if (potentialTitles.contains(text)) {
+                    tb.addLabel(DefaultLabels.TITLE);
+                    changes = true;
+                    break;
+                }
+
+                text = PAT_REMOVE_CHARACTERS.matcher(text).replaceAll("").trim();
+                if (potentialTitles.contains(text)) {
+                    tb.addLabel(DefaultLabels.TITLE);
+                    changes = true;
+                    break;
+                }
+            }
+            return changes;
+        }
+        return false;
+    }
 
 }
